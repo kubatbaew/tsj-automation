@@ -79,11 +79,11 @@
                                 </div>
 
                                 <div class="block">                        
-                                    <h4>Оплата за месяц "Май": <b><span style="color: red;">Не оплачено</span></b></h4>
-                                    <h4><b>Сумма оплаты:</b> 750 сомов</h4>
+                                    <h4>Оплата за месяц "{{ paid_month.month.get_month_name }}": <b>{% if paid_month.is_full_pay %}<span style="color: green;">Оплачено</span>{% else %}<span style="color: red;">Не оплачено</span>{% endif %}</b></h4>
+                                    <h4><b>Сумма оплаты:</b> {{ paid_month.how_much_pay }} сомов</h4>
 
                                     <a href="#dModal" role="button" class="btn btn-default" data-toggle="modal">Оплатить</a>
-                                    <button class="btn btn-primary" type="button"><a href="history.html" style="color: white; text-decoration: none;">Посмотреть историю</a></button>
+                                    <button class="btn btn-primary" type="button"><a href="{% url 'history_buy' %}" style="color: white; text-decoration: none;">Посмотреть историю</a></button>
                                 </div>
                             </div>                                
                         </div>

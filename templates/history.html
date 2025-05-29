@@ -1,4 +1,5 @@
 {% extends "base/base.html" %}
+{% load static %}
 
 {% block site_title %}
     {{ request.user.username }}
@@ -25,156 +26,145 @@
 
                     <div class="col-md-12">
                         <div class="head clearfix">
-                            <h1>История оплаты по месячно за <b>2025</b> год:</h1>
+                            <h1>История оплаты по месячно за <b>{{ now_year }}</b> год:</h1>
                         </div>
                         <div class="block">
                             <table cellpadding="0" cellspacing="0" width="100%" class="table listUsers">
-                                <tbody>                                
-                                    <tr>                                    
-                                        <td width="60">
-                                            <h5>1</h5>
-                                        </td>
-                                        <td>
-                                            <a href="#" class="user">ЯНВАРЬ</a>
-                                            <p class="about" style="color: green;">
-                                                <span class="glyphicon glyphicon-check"></span> Оплачено 750 сомов <br>
-                                            </p>
-                                        </td>
-                                        <td width="70">
-                                            <!-- <button class="btn btn-primary" type="button">Посмотреть чек оплаты</button> -->
-                                            <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#dModal">
-                                                Посмотреть чек оплаты
-                                            </button>
-                                        </td>
-                                        <div class="modal fade" id="dModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                                            <div class="modal-dialog">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <button type="button" class="close" data-dismiss="modal">
-                                                            <span aria-hidden="true">×</span><span class="sr-only">Close</span>
-                                                        </button>                        
-                                                        <h4 id="myModalLabel">Чек оплаты</h4>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <iframe src="check.pdf" width="100%" height="400px"></iframe>
-                                                    </div>                    
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </tr>   
-                                    <tr>                                    
-                                        <td width="60">
-                                            <h5>2</h5>
-                                        </td>
-                                        <td style="width: 1px;">
-                                            <a href="#" class="user">ФЕВРАЛЬ</a>
-                                            <p class="about" style="color: orange;">
-                                                <span class="glyphicon glyphicon-hourglass"></span> Ожидание оплаты 750 сомов<br>
-                                            </p>
-                                        </td>
-                                        <td width="70">
-                                            <form action="" id="postCheckPaySend" enctype="multipart/form-data">
-                                                <label for="check_pay">Выбрать чек</label>
-                                                <input type="file" name="chech_pay">
-                                                <button type="submit">Отправить</button>
-                                                
-                                            </form>
-                                            <span id="loader" style="display: none;">
-                                                <img src="img/loaders/loader.gif" title="loader.gif">
-                                            </span>
+                                <tbody>
+                                    {% for paid in paid_to_month %}
+                                        {% if paid.month.month == now_month and not paid.is_full_pay %}
+                                            <tr>                                    
+                                                <td width="60">
+                                                    <h5>{{ forloop.counter }}</h5>
+                                                </td>
+                                                <td style="width: 1px;">
+                                                    <a href="#" class="user"><span style="text-transform:uppercase">{{ paid.month.get_month_name }}</span></a>
+                                                    <p class="about" style="color: orange;">
+                                                        <span class="glyphicon glyphicon-hourglass"></span> Ожидание оплаты {{ paid.how_much_pay }} сомов<br>
+                                                    </p>
+                                                    <p class="about" style="color: green;">
+                                                        <span class="glyphicon glyphicon-check"></span> Оплачено {{ paid.pay }} сомов <br>
+                                                    </p>
+                                                </td>
+                                                <td width="70">
+                                                    <form id="postCheckPaySend{{ forloop.counter }}" data-loader-id="loader{{ forloop.counter }}">
+                                                        <label for="check_pay">Выбрать чек</label>
+                                                        <input type="file" name="chech_pay">
+                                                        <input type="text" style="display: none;" name="paid_id" value="{{ paid.id }}">
+                                                        <button type="submit">Отправить</button>
+                                                    </form>
 
-                                            <script>
-                                                document.getElementById('postCheckPaySend').addEventListener('submit', async function (event) {
-                                                    event.preventDefault(); // предотвращаем стандартную отправку формы
+                                                    <span id="loader{{ forloop.counter }}" style="display: none;">
+                                                        <img src="{% static 'img/loaders/loader.gif' %}" title="loader.gif">
+                                                    </span>
 
-                                                    const form = event.target;
-                                                    const formData = new FormData(form);
-                                                    const loader = document.getElementById('loader');
-                                                    const formObj = document.getElementById('postCheckPaySend'); 
-
-                                                    loader.style.display = 'inline-block'; // показать лоадер
-                                                    formObj.style.display = 'none';
-
-                                                    try {
-                                                        const response = await fetch('http://127.0.0.1:8000/upload', {
-                                                            method: 'POST',
-                                                            body: formData
-                                                        });
-
-                                                        if (!response.ok) {
-                                                            throw new Error('Ошибка при загрузке файла');
+                                                    <script>
+                                                        function getCSRFToken() {
+                                                            return document.querySelector('meta[name="csrf-token"]').getAttribute('content');
                                                         }
 
-                                                        const result = await response.json();
-                                                        console.log('Успешно отправлено:', result);
+                                                        document.querySelectorAll('form[id^="postCheckPaySend"]').forEach(form => {
+                                                            form.addEventListener('submit', async function (event) {
+                                                                event.preventDefault();
 
-                                                        notify_s('Успешно', 'Файл успешно загружен');
-                                                        setTimeout(() => {
-                                                            location.reload();
-                                                        }, 1000);
+                                                                const formData = new FormData(form);
+                                                                const loaderId = form.getAttribute('data-loader-id');
+                                                                const loader = document.getElementById(loaderId);
 
-                                                    } catch (error) {
-                                                        console.error('Ошибка:', error);
+                                                                loader.style.display = 'inline-block';
+                                                                form.style.display = 'none';
 
-                                                        notify_e('Ошибка', 'Не удалось загрузить файл');
-                                                        formObj.style.display = 'inline-block';
-                                                    } finally {
-                                                        loader.style.display = 'none'; // скрыть лоадер в любом случае
-                                                    }
-                                                });
-                                            </script>
-                                        </td>
-                                    </tr>                              
-                                    <tr>                                    
-                                        <td width="60">
-                                            <h5>3</h5>
-                                        </td>
-                                        <td style="width: 1px;">
-                                            <a href="#" class="user">МАРТ</a>
-                                            <p class="about" style="color: orange;">
-                                                <span class="glyphicon glyphicon-hourglass"></span> Ожидание оплаты <br>
-                                            </p>
-                                        </td>
-                                        <td width="70">
-                                            <span><img src="img/loaders/loader.gif" title="loader.gif"></span>
-                                        </td>
-                                    </tr> 
-                                    <tr>                                    
-                                        <td width="60">
-                                            <a href="#"><img src="img/users/aqvatarius_s.jpg" width="42" class="img-thumbnail"></a>
-                                        </td>
-                                        <td>
-                                            <a href="#" class="user">Aqvatarius</a>
-                                            <p class="about">
-                                                <span class="glyphicon glyphicon-envelope"></span> aqvatarius@domain.com <br>
-                                            </p>
-                                        </td>
-                                        <td>
-                                            <p class="about">
-                                                <a href="#"><span class="glyphicon glyphicon-pencil"></span></a> 
-                                                <a href="#"><span class="glyphicon glyphicon-envelope"></span></a> 
-                                                <a href="#"><span class="glyphicon glyphicon-remove"></span></a>                                        
-                                            </p>
-                                        </td>
-                                    </tr>
-                                    <tr>                                    
-                                        <td width="60">
-                                            <a href="#"><img src="img/users/aqvatarius_s.jpg" width="42" class="img-thumbnail"></a>
-                                        </td>
-                                        <td>
-                                            <a href="#" class="user">Aqvatarius</a>
-                                            <p class="about">
-                                                <span class="glyphicon glyphicon-envelope"></span> aqvatarius@domain.com <br>
-                                            </p>
-                                        </td>
-                                        <td>
-                                            <p class="about">
-                                                <a href="#"><span class="glyphicon glyphicon-pencil"></span></a> 
-                                                <a href="#"><span class="glyphicon glyphicon-envelope"></span></a> 
-                                                <a href="#"><span class="glyphicon glyphicon-remove"></span></a>                                        
-                                            </p>
-                                        </td>
-                                    </tr>                               
+                                                                try {
+                                                                    const response = await fetch('{% url "simple-upload" %}', {
+                                                                        method: 'POST',
+                                                                        body: formData,
+                                                                        headers: {
+                                                                            'X-CSRFToken': getCSRFToken()
+                                                                        },
+                                                                        credentials: 'include'
+                                                                    });
+
+                                                                    // Ждём 2 секунды (если нужно)
+                                                                    await new Promise(resolve => setTimeout(resolve, 2000));
+
+                                                                    if (!response.ok) {
+                                                                        // Получаем тело ответа с ошибкой
+                                                                        const errorData = await response.json();
+                                                                        // Бросаем ошибку с сообщением из сервера, если есть
+                                                                        throw new Error(errorData.error || 'Ошибка при загрузке файла');
+                                                                    }
+
+                                                                    const result = await response.json();
+                                                                    notify_s('Успешно', 'Файл успешно загружен');
+                                                                    setTimeout(() => {
+                                                                        location.reload();
+                                                                    }, 1000);
+
+                                                                } catch (error) {
+                                                                    console.error('Ошибка:', error);
+                                                                    // Показываем сообщение из ошибки
+                                                                    notify_e('Ошибка', error.message);
+                                                                    form.style.display = 'inline-block';
+                                                                    loader.style.display = 'none';
+                                                                    
+                                                                }
+                                                            });
+                                                        });
+                                                    </script>
+                                                </td>
+                                            </tr>
+                                        
+                                        {% elif paid.is_full_pay %}
+                                            <tr>                                    
+                                                <td width="60">
+                                                    <h5>{{ forloop.counter }}</h5>
+                                                </td>
+                                                <td>
+                                                    <a href="#" class="user"><span style="text-transform:uppercase">{{ paid.month.get_month_name }}</span></a>
+                                                    <p class="about" style="color: green;">
+                                                        <span class="glyphicon glyphicon-check"></span> Оплачено {{ paid.pay }} сомов <br>
+                                                    </p>
+                                                </td>
+                                                <td width="70">
+                                                    <!-- <button class="btn btn-primary" type="button">Посмотреть чек оплаты</button> -->
+                                                    <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#dModal{{ forloop.counter }}">
+                                                        Посмотреть чек оплаты
+                                                    </button>
+                                                </td>
+                                                <div class="modal fade" id="dModal{{ forloop.counter }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <button type="button" class="close" data-dismiss="modal">
+                                                                    <span aria-hidden="true">×</span><span class="sr-only">Close</span>
+                                                                </button>                        
+                                                                <h4 id="myModalLabel">Чек оплаты</h4>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <iframe src="{{ paid.check_pay.url }}" width="100%" height="400px"></iframe>
+                                                            </div>                    
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </tr>  
+                                        {% else %}
+                                            <tr>                                    
+                                                <td width="60">
+                                                    <h5>{{ forloop.counter }}</h5>
+                                                </td>
+                                                <td style="width: 1px;">
+                                                    <a href="#" class="user"><span style="text-transform:uppercase">{{ paid.month.get_month_name }}</span></a>
+                                                    <p class="about" style="color: orange;">
+                                                        <span class="glyphicon glyphicon-hourglass"></span> Ожидание оплаты <br>
+                                                    </p>
+                                                </td>
+                                                <td width="70">
+                                                    <!-- <span><img src="{% static "img/loaders/loader.gif" %}" title="loader.gif"></span> -->
+                                                     -
+                                                </td>
+                                            </tr> 
+                                        {% endif %}
+                                    {% endfor %}                                                      
                                 </tbody>
                             </table>
                         </div>

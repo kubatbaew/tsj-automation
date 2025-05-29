@@ -1,8 +1,11 @@
+import datetime
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 
 from functools import wraps
+
+from apps.months.models import Year, PaidMonth
 
 def _check_is_authenticated(view_func):
     @wraps(view_func)
@@ -39,11 +42,32 @@ def login_logics(request):
 
 @_check_is_authenticated
 def homepage(request):
+    now_month = datetime.datetime.now().month
+
+    paid_month = PaidMonth.objects.get(
+        apartment=request.user.apartment,
+        month__month=now_month
+    )
+
+    print(paid_month)
 
     return render(request, 'index.html', locals())
 
 
 @_check_is_authenticated
 def history_buy(request):
+    now_year = datetime.datetime.now().year
+    now_month = datetime.datetime.now().month
+    year_obj = Year.objects.get(year=now_year)
     
+    paid_to_month = []
+    months = year_obj.months_for_year.all()
+    for month in months:
+        paid = PaidMonth.objects.get(
+            month=month,
+            apartment=request.user.apartment,
+        )
+        paid_to_month.append(paid)
+    
+
     return render(request, "history.html", locals())

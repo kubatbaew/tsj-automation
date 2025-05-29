@@ -10,6 +10,8 @@
         {% endblock %}
     </title>
 
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    
     <link rel="icon" type="image/ico" href="{% static 'favicon.ico' %}"/>
     
     <link href='{% static "css/stylesheets.css" %}' rel="stylesheet" type="text/css" />
