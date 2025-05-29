@@ -71,19 +71,19 @@
                                                 </li>
                                                 <li>
                                                     <div class="title">ФИО:</div>
-                                                    <div class="text">Асанов Асан Асанович</div>
+                                                    <div class="text">{{ request.user.last_name }} {{ request.user.first_name }} {{ request.user.father_name }}</div>
                                                 </li>
                                                 <li>
                                                     <div class="title">Квартира:</div>
-                                                    <div class="text">215</div>
+                                                    <div class="text">{{ request.user.apartment.apartment_number }}</div>
                                                 </li>
                                                 <li>
                                                     <div class="title">Номер телефона:</div>
-                                                    <div class="text">+996 (506) 322-123</div>
+                                                    <div class="text">+996 ({{ request.user.get_phone_number_for_template.0 }}) {{ request.user.get_phone_number_for_template.1 }}-{{ request.user.get_phone_number_for_template.2 }}</div>
                                                 </li>
                                                 <li>
                                                     <div class="title">Общая площадь:</div>
-                                                    <div class="text">64,5 м²</div>
+                                                    <div class="text">{{ request.user.apartment.get_total_area }} м²</div>
                                                 </li>
                                                 <li>
                                                     <div class="title">Пароль:</div>
