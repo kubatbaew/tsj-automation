@@ -21,6 +21,7 @@ INSTALLED_APPS = [
     'apps.pages',
     'apps.apartments',
     'apps.users',
+    'apps.months',
 ]
 
 MIDDLEWARE = [
