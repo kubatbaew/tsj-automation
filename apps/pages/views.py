@@ -42,3 +42,8 @@ def homepage(request):
 
     return render(request, 'index.html', locals())
 
+
+@_check_is_authenticated
+def history_buy(request):
+    
+    return render(request, "history.html", locals())
