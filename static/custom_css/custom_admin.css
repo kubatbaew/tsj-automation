@@ -19,6 +19,14 @@ body {
     color: white;
 }
 
+.module {
+    background: url("../img/backgrounds/body.jpg") left top repeat;
+}
+
+.module h2 {
+    background: url("../img/styles/default/backgrounds/header.jpg") left center repeat-x;
+}
+
 .module caption {
     background: url("../img/styles/default/backgrounds/header.jpg") left center repeat-x;
 }
