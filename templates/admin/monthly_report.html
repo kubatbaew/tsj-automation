@@ -1,0 +1,102 @@
+{% extends "admin/base_site.html" %}
+
+{% block extrastyle %}
+  <style>
+    .adminlist {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .adminlist th, .adminlist td {
+      padding: 8px 12px;
+      border: 1px solid #ccc;
+      text-align: center;
+    }
+
+    .adminlist thead {
+      background: #34495e;
+      color: white;
+    }
+
+    .adminlist tfoot {
+      background: #ecf0f1;
+    }
+
+    .button {
+      background-color: #27ae60;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 4px;
+      text-decoration: none;
+    }
+
+    .button:hover {
+      background-color: #2ecc71;
+    }
+
+    .module {
+      padding: 20px;
+      background: #fdfdfd;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-top: 20px;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      color: #2c3e50;
+    }
+  </style>
+{% endblock %}
+
+
+{% block content %}
+  <div class="module">
+    <!-- <h2>Отчёт за {{ month.get_month_name }} {{ month.year.year }}</h2> -->
+    
+    <table class="adminlist">
+      <thead>
+        <tr>
+          <th>Квартира</th>
+          <th>Начислено</th>
+          <th>Оплачено</th>
+          <th>Статус</th>
+          <th>Дата</th>
+          <th>Чек</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in payments %}
+          <tr>
+            <td>{{ p.apartment.apartment_number }}</td>
+            <td>{{ p.how_much_pay }}</td>
+            <td>{{ p.pay }}</td>
+            <td>
+              {% if p.is_full_pay %}
+                <span style="color:green;">✅ Полностью</span>
+              {% else %}
+                <span style="color:red;">❌ Не полностью</span>
+              {% endif %}
+            </td>
+            <td>{{ p.created_at|date:"d.m.Y H:i" }}</td>
+            <td>
+              {% if p.check_pay %}
+                <a href="{{ p.check_pay.url }}" class="button" target="_blank">Скачать</a>
+              {% else %}
+                —
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+      <tfoot>
+        <tr style="font-weight: bold;">
+          <td>ИТОГО</td>
+          <td>{{ total_due }}</td>
+          <td>{{ total_paid }}</td>
+          <td colspan="3"></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+{% endblock %}
