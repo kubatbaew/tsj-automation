@@ -13,6 +13,8 @@ import tempfile
 import os
 import re
 
+from django.utils.timezone import now
+
 class SimpleUploadView(APIView):
     def post(self, request, *args, **kwargs):
         uploaded_file = request.FILES.get('chech_pay')  # проверь правильность имени поля
@@ -81,6 +83,7 @@ class SimpleUploadView(APIView):
 
         # сохраняем файл чека
         paid.check_pay = uploaded_file
+        paid.created_at = now()
 
         paid.save()
 
