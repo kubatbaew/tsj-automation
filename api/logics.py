@@ -15,7 +15,7 @@ def extract_from_pdf(pdf_path):
             text += page.extract_text()
     return text
 
-def check_data(text, expected_sum="750", expected_name="ДАСТАН К.", expected_service="Компаньон"):
+def check_data(text, expected_sum="750", expected_name="АЙГУЛ А.", expected_service="Компаньон"):
 
     return {
         "sum_ok": expected_sum in text,

@@ -56,7 +56,7 @@ class SimpleUploadView(APIView):
                 os.remove(temp_path)
 
         # Проверка имени (регистронезависимо)
-        if not name_value or name_value.strip().upper() != "ДАСТАН К.":
+        if not name_value or name_value.strip().upper() != "АЙГУЛ А.":
             return Response({'error': 'Неправильный чек: неверное имя получателя'}, status=status.HTTP_400_BAD_REQUEST)
 
         # Преобразуем сумму к числу — для этого уберём пробелы и заменим запятую на точку
