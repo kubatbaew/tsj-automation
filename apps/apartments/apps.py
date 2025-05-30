@@ -4,3 +4,4 @@ from django.apps import AppConfig
 class ApartmentsConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'apps.apartments'
+    verbose_name = "Квартиры и подъезды"

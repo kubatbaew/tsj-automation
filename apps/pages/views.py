@@ -1,11 +1,11 @@
 import datetime
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 
 from functools import wraps
 
-from apps.months.models import Year, PaidMonth
+from apps.months.models import Year, PaidMonth, Month
 
 def _check_is_authenticated(view_func):
     @wraps(view_func)
@@ -40,13 +40,23 @@ def login_logics(request):
     return render(request, "login.html")
 
 
+def logout_logics(request):
+    logout(request)
+    return redirect("login_logics")
+
+
 @_check_is_authenticated
 def homepage(request):
+    now_year = datetime.datetime.now().year
     now_month = datetime.datetime.now().month
+    
+    year_obj = Year.objects.get(year=now_year)
+    month_obj = Month.objects.get(year=year_obj, month=now_month)
+
 
     paid_month = PaidMonth.objects.get(
         apartment=request.user.apartment,
-        month__month=now_month
+        month=month_obj,
     )
 
     print(paid_month)

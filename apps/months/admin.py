@@ -24,7 +24,7 @@ class PaidMonthAdmin(admin.ModelAdmin):
         "apartment", "month", "how_much_pay",
         "pay", "is_full_pay", "created_at"
     )
-    list_filter = ("is_full_pay", "month__year", "month__month", "apartment__entrance")
+    list_filter = ("is_full_pay", "month__year", "month__month", "apartment__entrance", "apartment")
     search_fields = ("apartment__apartment_number",)
     ordering = ("-created_at",)
     readonly_fields = ("created_at",)

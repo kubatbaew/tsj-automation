@@ -4,6 +4,13 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
+from django.contrib.auth.models import Group
+
+admin.site.unregister(Group)
+admin.site.site_header = "Панель управления ТСЖ"
+admin.site.site_title = "ТСЖ Админ"
+admin.site.index_title = "Добро пожаловать в админ-панель"
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('apps.pages.urls')),

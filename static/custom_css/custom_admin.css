@@ -1,0 +1,32 @@
+/* Фоновый цвет панели */
+#header {
+    background: url("../img/styles/default/backgrounds/header.jpg") left center repeat-x;
+}
+
+/* Цвет заголовка */
+#branding h1 {
+    color: #ecf0f1;
+}
+
+/* Цвет фона страницы */
+body {
+    background: url("../img/backgrounds/body.jpg") left top repeat;
+}
+
+/* Кнопки */
+.button.default {
+    background-color: #27ae60;
+    color: white;
+}
+
+.module caption {
+    background: url("../img/styles/default/backgrounds/header.jpg") left center repeat-x;
+}
+
+div.breadcrumbs {
+    background: url("../img/styles/default/backgrounds/header.jpg") left center repeat-x;
+}
+
+html[data-theme="light"] .theme-toggle svg.theme-icon-when-light {
+    display: none;
+}

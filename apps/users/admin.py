@@ -5,14 +5,20 @@ from apps.users.models import User
 
 @admin.register(User)
 class UserAdmin(BaseUserAdmin):
-    list_display = ("username", "father_name")
+    list_display = ("username", "apartment")
     search_fields = ("username", "email", "first_name", "last_name", "father_name")
     ordering = ("username",)
 
-    fieldsets = BaseUserAdmin.fieldsets + (
-        ("Apartment Info", {"fields": ("apartment", "father_name", "phone_number")}),
+    fieldsets = (
+        (None, {"fields": ("username", "password")}),
+        ("Личная информация", {"fields": ("first_name", "last_name", "father_name", "email", "phone_number")}),
+        ("Информация о квартире", {"fields": ("apartment",)}),
+        ("Права доступа", {"fields": ("is_active", "is_staff", "is_superuser")}),
     )
 
-    add_fieldsets = BaseUserAdmin.add_fieldsets + (
-        (None, {"fields": ("apartment", "father_name", "phone_number")}),
+    add_fieldsets = (
+        (None, {
+            "classes": ("wide",),
+            "fields": ("password1", "password2", "first_name", "last_name", "father_name", "email", "phone_number", "apartment", "is_active", "is_staff", "is_superuser"),
+        }),
     )

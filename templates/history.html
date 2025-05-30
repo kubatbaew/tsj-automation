@@ -120,33 +120,19 @@
                                                     <h5>{{ forloop.counter }}</h5>
                                                 </td>
                                                 <td>
-                                                    <a href="#" class="user"><span style="text-transform:uppercase">{{ paid.month.get_month_name }}</span></a>
+                                                    <a href="#" class="user">
+                                                        <span style="text-transform:uppercase">{{ paid.month.get_month_name }}</span>
+                                                    </a>
                                                     <p class="about" style="color: green;">
                                                         <span class="glyphicon glyphicon-check"></span> Оплачено {{ paid.pay }} сомов <br>
                                                     </p>
                                                 </td>
                                                 <td width="70">
-                                                    <!-- <button class="btn btn-primary" type="button">Посмотреть чек оплаты</button> -->
                                                     <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#dModal{{ forloop.counter }}">
                                                         Посмотреть чек оплаты
                                                     </button>
                                                 </td>
-                                                <div class="modal fade" id="dModal{{ forloop.counter }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                                                    <div class="modal-dialog">
-                                                        <div class="modal-content">
-                                                            <div class="modal-header">
-                                                                <button type="button" class="close" data-dismiss="modal">
-                                                                    <span aria-hidden="true">×</span><span class="sr-only">Close</span>
-                                                                </button>                        
-                                                                <h4 id="myModalLabel">Чек оплаты</h4>
-                                                            </div>
-                                                            <div class="modal-body">
-                                                                <iframe src="{{ paid.check_pay.url }}" width="100%" height="400px"></iframe>
-                                                            </div>                    
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </tr>  
+                                            </tr>   
                                         {% else %}
                                             <tr>                                    
                                                 <td width="60">
@@ -167,6 +153,26 @@
                                     {% endfor %}                                                      
                                 </tbody>
                             </table>
+
+                            {% for paid in paid_to_month %}
+                                {% if paid.is_full_pay %}
+                                    <div class="modal fade" id="dModal{{ forloop.counter }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel{{ forloop.counter }}" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal">
+                                                        <span aria-hidden="true">×</span><span class="sr-only">Close</span>
+                                                    </button>                        
+                                                    <h4 id="myModalLabel{{ forloop.counter }}">Чек оплаты</h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <iframe src="{{ paid.check_pay.url }}" width="100%" height="400px"></iframe>
+                                                </div>                    
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
                         </div>
                     </div>            
 
