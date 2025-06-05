@@ -15,12 +15,11 @@ def extract_from_pdf(pdf_path):
             text += page.extract_text()
     return text
 
-def check_data(text, expected_sum="750", expected_name="АЙГУЛ А.", expected_service="Компаньон"):
+def check_data(text, expected_sum="750", expected_name="Айгул А."):
 
     return {
         "sum_ok": expected_sum in text,
-        "name_ok": expected_name in text,
-        "service_ok": expected_service in text
+        "name_ok": expected_name.lower() in text.lower()
     }
 
 def extract_from_image(img_path):
@@ -44,7 +43,8 @@ def extract_sum_and_name(text):
             sum_value = match.group(1)
             break
 
-    name_match = re.search(r'Получатель:?\s*([А-ЯЁ]+(?:\s[А-ЯЁ]\.)?)', text)
+    # Поиск имени после номера и слеша
+    name_match = re.search(r'\d{9,}/\s*([А-ЯЁа-яё]+(?:\s[А-ЯЁа-яё]\.))', text)
     name_value = name_match.group(1) if name_match else None
 
     return sum_value, name_value

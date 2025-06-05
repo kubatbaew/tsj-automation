@@ -73,6 +73,7 @@ class PaidMonth(models.Model):
     check_pay = models.FileField(
         upload_to="checks/",
         verbose_name="Чек",
+        null=True, blank=True,
     )
     is_full_pay = models.BooleanField(
         default=False,

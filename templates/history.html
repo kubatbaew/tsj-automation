@@ -49,7 +49,7 @@
                                                 <td width="70">
                                                     <form id="postCheckPaySend{{ forloop.counter }}" data-loader-id="loader{{ forloop.counter }}">
                                                         <label for="check_pay">Выбрать чек</label>
-                                                        <input type="file" name="chech_pay">
+                                                        <input type="file" name="chech_pay" accept="application/pdf">
                                                         <input type="text" style="display: none;" name="paid_id" value="{{ paid.id }}">
                                                         <button type="submit">Отправить</button>
                                                     </form>
