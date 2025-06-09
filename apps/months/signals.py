@@ -20,4 +20,5 @@ def create_paid_for_all_apartments(sender, instance, created, **kwargs):
             PaidMonth.objects.create(
                 month=instance,
                 apartment=apartment,
+                how_much_pay=750,
             )
